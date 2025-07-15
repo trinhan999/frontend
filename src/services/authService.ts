@@ -142,6 +142,24 @@ class AuthService {
       throw new Error(error.response?.data?.error || 'Token refresh failed');
     }
   }
+
+  async updateUser(id: number, userData: Partial<RegisterRequest>): Promise<ApiResponse<AuthResponse['user']>> {
+    try {
+      const response = await this.api.put<ApiResponse<AuthResponse['user']>>(`/users/${id}`, userData);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update user');
+    }
+  }
+
+  async changePassword(id: number, currentPassword: string, newPassword: string): Promise<ApiResponse<{ message: string }>> {
+    try {
+      const response = await this.api.post<ApiResponse<{ message: string }>>(`/users/${id}/change-password`, { currentPassword, newPassword });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to change password');
+    }
+  }
 }
 
 export const authService = new AuthService(); 

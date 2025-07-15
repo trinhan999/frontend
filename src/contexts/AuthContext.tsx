@@ -21,6 +21,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,10 +47,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check for existing user data on app load
     const storedUser = Cookies.get('user');
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    
+    let logoutTimer: NodeJS.Timeout | null = null;
+
+    function scheduleAutoLogout(token: string) {
+      try {
+        // Decode JWT to get expiration
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp;
+        if (exp) {
+          const now = Math.floor(Date.now() / 1000);
+          const timeLeft = exp - now;
+          if (timeLeft > 0) {
+            logoutTimer = setTimeout(() => {
+              logout();
+            }, timeLeft * 1000);
+          } else {
+            logout();
+          }
+        }
+      } catch (e) {
+        // If decoding fails, logout for safety
+        logout();
+      }
+    }
+
     if (storedUser && token) {
       try {
         setUser(JSON.parse(storedUser));
+        scheduleAutoLogout(token);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
         Cookies.remove('user');
@@ -62,11 +87,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       Cookies.remove('user');
     }
     setIsLoading(false);
+
+    return () => {
+      if (logoutTimer) clearTimeout(logoutTimer);
+    };
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
     Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+    // Schedule auto logout on login
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (token) {
+      // Decode and schedule auto logout
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp;
+        if (exp) {
+          const now = Math.floor(Date.now() / 1000);
+          const timeLeft = exp - now;
+          if (timeLeft > 0) {
+            setTimeout(() => {
+              logout();
+            }, timeLeft * 1000);
+          } else {
+            logout();
+          }
+        }
+      } catch (e) {
+        logout();
+      }
+    }
   };
 
   const logout = () => {
@@ -79,12 +130,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.push('/login');
   };
 
+  const updateUser = (userData: User) => {
+    setUser(userData);
+    Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+  };
+
   const value: AuthContextType = {
     user,
     login,
     logout,
     isAuthenticated: !!user,
     isLoading,
+    updateUser,
   };
 
   return (
