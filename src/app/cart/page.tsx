@@ -7,6 +7,7 @@ import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, ArrowRight } from 'lucide-
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { productService, Product } from '@/services/productService';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const { cart, loading, updateCartItem, removeFromCart, clearCart } = useCart();
@@ -17,6 +18,7 @@ export default function CartPage() {
   const [showClearCartModal, setShowClearCartModal] = useState(false);
   // Map of productId to stockQuantity
   const [productStocks, setProductStocks] = useState<Record<number, number>>({});
+  const router = useRouter();
 
   // Fetch stock for all products in cart
   useEffect(() => {
@@ -339,7 +341,10 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium">
+                  <button
+                    className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                    onClick={() => router.push('/checkout')}
+                  >
                     Proceed to Checkout
                   </button>
                   
