@@ -1,8 +1,10 @@
 import axios from "axios";
 
+import { API_CONFIG } from '@/config/api';
+
 export async function getOrders() {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api"}/orders`, {
+  const response = await axios.get(`${API_CONFIG.BASE_URL}/orders`, {
     headers: {
       Authorization: token ? `Bearer ${token}` : undefined,
     },

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { API_CONFIG } from '@/config/api';
 
 export interface Product {
   id: number;
@@ -38,22 +37,22 @@ export interface ProductPage {
 export const productService = {
   async getProducts(filters: ProductFilters = {}): Promise<ProductPage> {
     const params: Record<string, string | number | undefined> = { ...filters };
-    const response = await axios.get(`${API_BASE_URL}/api/products`, { params });
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/products`, { params });
     return response.data.data;
   },
 
   async getProductById(id: number): Promise<Product> {
-    const response = await axios.get(`${API_BASE_URL}/api/products/${id}`);
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/products/${id}`);
     return response.data.data;
   },
 
   async getCategories(): Promise<string[]> {
-    const response = await axios.get(`${API_BASE_URL}/api/products/categories`);
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/products/categories`);
     return response.data.data;
   },
 
   async getBrands(): Promise<string[]> {
-    const response = await axios.get(`${API_BASE_URL}/api/products/brands`);
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/products/brands`);
     return response.data.data;
   },
 }; 

@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { API_CONFIG } from '@/config/api';
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -52,7 +52,7 @@ export default function CheckoutPage() {
     setLoading(true);
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/orders`, {
+      const res = await fetch(`${API_CONFIG.BASE_URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

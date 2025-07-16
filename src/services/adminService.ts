@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+import { API_CONFIG } from '@/config/api';
 
 interface OrderItem {
   productId: number;
@@ -71,7 +71,7 @@ const getAuthHeaders = () => {
 export const adminService = {
   // Dashboard
   async getDashboardStats(): Promise<DashboardStats> {
-    const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/dashboard/stats`, {
       headers: getAuthHeaders(),
     });
     
@@ -85,7 +85,7 @@ export const adminService = {
 
   // Products
   async getAllProducts(): Promise<Product[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/products`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/products`, {
       headers: getAuthHeaders(),
     });
     
@@ -98,7 +98,7 @@ export const adminService = {
   },
 
   async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
-    const response = await fetch(`${API_BASE_URL}/admin/products`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/products`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(product),
@@ -113,7 +113,7 @@ export const adminService = {
   },
 
   async updateProduct(id: number, product: Partial<Product>): Promise<Product> {
-    const response = await fetch(`${API_BASE_URL}/admin/products/${id}`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/products/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify(product),
@@ -128,7 +128,7 @@ export const adminService = {
   },
 
   async deleteProduct(id: number): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/admin/products/${id}`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/products/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
@@ -140,7 +140,7 @@ export const adminService = {
 
   // Orders
   async getAllOrders(): Promise<Order[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/orders`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/orders`, {
       headers: getAuthHeaders(),
     });
     
@@ -153,7 +153,7 @@ export const adminService = {
   },
 
   async updateOrderStatus(orderId: number, status: string): Promise<Order> {
-    const response = await fetch(`${API_BASE_URL}/admin/orders/${orderId}/status?status=${status}`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/orders/${orderId}/status?status=${status}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
@@ -168,7 +168,7 @@ export const adminService = {
 
   // Users
   async getAllUsers(): Promise<User[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/users`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/users`, {
       headers: getAuthHeaders(),
     });
     
@@ -181,7 +181,7 @@ export const adminService = {
   },
 
   async updateUserRole(userId: number, role: string): Promise<User> {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/role?role=${role}`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/users/${userId}/role?role=${role}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
@@ -195,7 +195,7 @@ export const adminService = {
   },
 
   async deleteUser(userId: number): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+    const response = await fetch(`${API_CONFIG.BASE_URL}/admin/users/${userId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+import { API_CONFIG } from '@/config/api';
 
 export interface LoginRequest {
   usernameOrEmail: string;
@@ -39,7 +38,7 @@ export interface ApiResponse<T> {
 
 class AuthService {
   private api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: API_CONFIG.BASE_URL,
     headers: {
       'Content-Type': 'application/json',
     },

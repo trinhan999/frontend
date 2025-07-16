@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { API_CONFIG } from '@/config/api';
 
 export interface CartItem {
   id: number;
@@ -35,7 +34,7 @@ export interface UpdateCartItemRequest {
 
 // Create authenticated axios instance
 const authenticatedApi = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_CONFIG.BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -57,27 +56,27 @@ authenticatedApi.interceptors.request.use(
 
 export const cartService = {
   async getCart(): Promise<Cart> {
-    const response = await authenticatedApi.get('/api/cart');
+    const response = await authenticatedApi.get('/cart');
     return response.data.data;
   },
 
   async addToCart(request: AddToCartRequest): Promise<Cart> {
-    const response = await authenticatedApi.post('/api/cart/add', request);
+    const response = await authenticatedApi.post('/cart/add', request);
     return response.data.data;
   },
 
   async updateCartItem(productId: number, request: UpdateCartItemRequest): Promise<Cart> {
-    const response = await authenticatedApi.put(`/api/cart/items/${productId}`, request);
+    const response = await authenticatedApi.put(`/cart/items/${productId}`, request);
     return response.data.data;
   },
 
   async removeFromCart(productId: number): Promise<Cart> {
-    const response = await authenticatedApi.delete(`/api/cart/items/${productId}`);
+    const response = await authenticatedApi.delete(`/cart/items/${productId}`);
     return response.data.data;
   },
 
   async clearCart(): Promise<Cart> {
-    const response = await authenticatedApi.delete('/api/cart');
+    const response = await authenticatedApi.delete('/cart');
     return response.data.data;
   },
 }; 

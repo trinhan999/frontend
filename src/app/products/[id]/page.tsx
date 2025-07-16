@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
+import { API_CONFIG } from '@/config/api';
 
 interface Product {
   id: number;
@@ -32,8 +33,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       setLoading(true);
       setError("");
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-        const res = await axios.get(`${API_BASE_URL}/products/${id}`);
+        const res = await axios.get(`${API_CONFIG.BASE_URL}/products/${id}`);
         setProduct(res.data.data);
       } catch {
         setError("Product not found");
