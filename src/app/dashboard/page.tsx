@@ -5,10 +5,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { authService } from '@/services/authService';
-import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const { user, logout, updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -25,7 +24,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter();
 
   // Update form fields when user changes
   React.useEffect(() => {
@@ -56,8 +54,9 @@ export default function DashboardPage() {
       setSuccess('Profile updated successfully!');
       setShowEditModal(false);
       if (res.data) updateUser(res.data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to update profile');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update profile';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -78,8 +77,9 @@ export default function DashboardPage() {
       await authService.changePassword(user.id, passwordForm.currentPassword, passwordForm.newPassword);
       setSuccess('Password changed successfully!');
       setShowPasswordModal(false);
-    } catch (err: any) {
-      setError(err.message || 'Failed to change password');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to change password';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

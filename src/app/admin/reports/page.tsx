@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { adminService } from '@/services/adminService';
@@ -13,7 +12,7 @@ interface DashboardStats {
   totalCustomers: number;
   totalProducts: number;
   lowStockProducts: number;
-  recentOrders: any[];
+  recentOrders: unknown[];
 }
 
 interface ReportData {
@@ -23,7 +22,6 @@ interface ReportData {
 }
 
 export default function AdminReportsPage() {
-  const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,8 +65,9 @@ export default function AdminReportsPage() {
       };
       
       setReportData(mockReportData);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch report data');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch report data';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

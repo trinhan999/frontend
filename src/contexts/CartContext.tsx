@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Cart, CartItem, cartService, AddToCartRequest, UpdateCartItemRequest } from '@/services/cartService';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { Cart, cartService, AddToCartRequest, UpdateCartItemRequest } from '@/services/cartService';
 import { useAuth } from './AuthContext';
 
 interface CartContextType {
@@ -25,7 +25,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useAuth();
 
-  const loadCart = async () => {
+  const loadCart = useCallback(async () => {
     if (!isAuthenticated) {
       setCart(null);
       return;
@@ -41,11 +41,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     loadCart();
-  }, [isAuthenticated]);
+  }, [loadCart]);
 
   const addToCart = async (request: AddToCartRequest) => {
     try {

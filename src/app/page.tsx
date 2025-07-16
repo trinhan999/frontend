@@ -10,18 +10,16 @@ import {
   Keyboard,
   ArrowRight,
   Star,
-  ShoppingCart,
-  User,
-  LogOut
+  ShoppingCart
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import ProductCard from "@/components/ProductCard";
 
 export default function HomePage() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   
   const categories = [
@@ -68,7 +66,6 @@ export default function HomePage() {
     },
   ];
 
-  const pathname = usePathname();
   const router = useRouter();
 
   const handleAddToCart = async (productId: number) => {
@@ -197,7 +194,7 @@ export default function HomePage() {
               Why Choose PC Component Store?
             </h2>
             <p className="text-lg text-gray-600">
-              We're committed to providing the best shopping experience
+              We&apos;re committed to providing the best shopping experience
             </p>
           </div>
           

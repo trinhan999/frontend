@@ -44,8 +44,9 @@ export default function OrdersPage() {
         setOrders(data);
         setLoading(false);
       })
-      .catch((err: any) => {
-        setError(err?.message || "Failed to fetch orders");
+      .catch((err: unknown) => {
+        const errorMessage = err instanceof Error ? err.message : "Failed to fetch orders";
+        setError(errorMessage);
         setLoading(false);
       });
   }, [isAuthenticated, router]);

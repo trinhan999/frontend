@@ -8,20 +8,10 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import DashboardStats from '@/components/admin/DashboardStats';
 import { adminService } from '@/services/adminService';
 
-interface DashboardStats {
-  totalSales: number;
-  totalOrders: number;
-  ordersToday: number;
-  totalCustomers: number;
-  totalProducts: number;
-  lowStockProducts: number;
-  recentOrders: any[];
-}
-
 export default function AdminPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats, setStats] = useState<Awaited<ReturnType<typeof adminService.getDashboardStats>> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,8 +20,9 @@ export default function AdminPage() {
       try {
         const dashboardStats = await adminService.getDashboardStats();
         setStats(dashboardStats);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch dashboard stats');
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch dashboard stats';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -89,7 +80,7 @@ export default function AdminPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             <p className="mt-1 text-sm text-gray-500">
-              Welcome back, {user?.firstName}! Here's what's happening with your store today.
+              Welcome back, {user?.firstName}! Here&apos;s what&apos;s happening with your store today.
             </p>
           </div>
 
@@ -125,28 +116,24 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {stats.recentOrders.map((order: any) => (
-                        <tr key={order.orderId}>
+                      {stats.recentOrders.map((order) => (
+                        <tr key={order.productId}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            #{order.orderId}
+                            #{order.productId}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {order.shippingName}
+                            {order.productName}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            ${order.total.toFixed(2)}
+                            ${order.price.toFixed(2)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                              order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {order.status}
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                              Qty: {order.quantity}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(order.createdAt).toLocaleDateString()}
+                            Product Item
                           </td>
                         </tr>
                       ))}

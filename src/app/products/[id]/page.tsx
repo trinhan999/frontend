@@ -1,14 +1,27 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
 
+interface Product {
+  id: number;
+  name: string;
+  brand: string;
+  category: string;
+  price: number;
+  imageUrl: string;
+  averageRating: number;
+  reviewCount: number;
+  description: string;
+  stockQuantity: number;
+  specifications?: string;
+}
+
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { addToCart, loading: cartLoading } = useCart();
@@ -22,7 +35,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
         const res = await axios.get(`${API_BASE_URL}/products/${id}`);
         setProduct(res.data.data);
-      } catch (err: any) {
+      } catch {
         setError("Product not found");
       } finally {
         setLoading(false);
@@ -39,7 +52,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     try {
       await addToCart({ productId: product.id, quantity });
       toast.success('Added to cart!');
-    } catch (e) {
+    } catch {
       toast.error('Failed to add to cart. Please login or try again.');
     }
   };
@@ -95,10 +108,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
 // Helper component to render specifications as a table
 function SpecificationsTable({ specifications }: { specifications: string }) {
-  let specsObj: Record<string, any> = {};
+  let specsObj: Record<string, unknown> = {};
   try {
     specsObj = typeof specifications === 'string' ? JSON.parse(specifications) : specifications;
-  } catch (e) {
+  } catch {
     return <div className="text-red-500">Invalid specifications format.</div>;
   }
   if (!specsObj || typeof specsObj !== 'object' || Array.isArray(specsObj)) {

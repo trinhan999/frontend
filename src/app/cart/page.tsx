@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { productService, Product } from '@/services/productService';
+import { productService } from '@/services/productService';
 import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
-  const { cart, loading, updateCartItem, removeFromCart, clearCart } = useCart();
+  const { cart, updateCartItem, removeFromCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
   const [removingItems, setRemovingItems] = useState<Set<number>>(new Set());
@@ -34,7 +34,7 @@ export default function CartPage() {
           try {
             const product = await productService.getProductById(productId);
             stockMap[productId] = product.stockQuantity;
-          } catch (e) {
+          } catch {
             stockMap[productId] = 0;
           }
         })

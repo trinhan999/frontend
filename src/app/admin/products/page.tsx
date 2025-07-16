@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { adminService } from '@/services/adminService';
@@ -23,10 +22,8 @@ interface Product {
 }
 
 export default function AdminProductsPage() {
-  const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -40,8 +37,9 @@ export default function AdminProductsPage() {
     try {
       const data = await adminService.getAllProducts();
       setProducts(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch products');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch products';
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -61,8 +59,9 @@ export default function AdminProductsPage() {
       try {
         await adminService.deleteProduct(productId);
         setProducts(products.filter(p => p.id !== productId));
-      } catch (err: any) {
-        alert('Failed to delete product: ' + err.message);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete product';
+        alert('Failed to delete product: ' + errorMessage);
       }
     }
   };
@@ -83,8 +82,9 @@ export default function AdminProductsPage() {
       }
       setShowAddModal(false);
       setEditingProduct(null);
-    } catch (err: any) {
-      alert('Failed to save product: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save product';
+      alert('Failed to save product: ' + errorMessage);
     }
   };
 
@@ -109,7 +109,7 @@ export default function AdminProductsPage() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Products Management</h1>
               <p className="mt-1 text-sm text-gray-500">
-                Manage your store's product catalog
+                Manage your store&apos;s product catalog
               </p>
             </div>
             <button

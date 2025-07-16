@@ -60,7 +60,7 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           ...form,
-          items: cart.items.map((item: any) => ({
+          items: cart.items.map((item: { productId: number; quantity: number }) => ({
             productId: item.productId,
             quantity: item.quantity,
           })),
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
       await clearCart();
       toast.success("Order placed successfully!");
       router.push("/dashboard");
-    } catch (err) {
+    } catch {
       toast.error("Failed to place order. Please try again.");
     } finally {
       setLoading(false);

@@ -1,5 +1,12 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
+interface OrderItem {
+  productId: number;
+  productName: string;
+  quantity: number;
+  price: number;
+}
+
 interface DashboardStats {
   totalSales: number;
   totalOrders: number;
@@ -7,7 +14,7 @@ interface DashboardStats {
   totalCustomers: number;
   totalProducts: number;
   lowStockProducts: number;
-  recentOrders: any[];
+  recentOrders: OrderItem[];
 }
 
 interface Product {
@@ -50,7 +57,7 @@ interface Order {
   shippingPhone: string;
   paymentMethod: string;
   paymentStatus: string;
-  items: any[];
+  items: OrderItem[];
 }
 
 const getAuthHeaders = () => {

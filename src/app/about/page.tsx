@@ -6,10 +6,6 @@ import {
   Shield, 
   Truck, 
   Headphones, 
-  Clock, 
-  Star, 
-  Users, 
-  Award,
   CheckCircle,
   Package,
   Zap
@@ -53,12 +49,12 @@ export default function AboutPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-lg text-gray-600 mb-6">
-                At PC Component Store, we're passionate about empowering tech enthusiasts, gamers, and professionals 
+                At PC Component Store, we&apos;re passionate about empowering tech enthusiasts, gamers, and professionals 
                 to build their dream computers. Our mission is to provide the highest quality PC components with 
                 exceptional customer service and competitive prices.
               </p>
               <p className="text-lg text-gray-600 mb-8">
-                Whether you're a first-time builder or a seasoned enthusiast, we're here to guide you through 
+                Whether you&apos;re a first-time builder or a seasoned enthusiast, we&apos;re here to guide you through 
                 every step of your PC building journey with expert advice and reliable products.
               </p>
               <Link 

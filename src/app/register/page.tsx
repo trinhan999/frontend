@@ -61,8 +61,9 @@ export default function RegisterPage() {
       } else {
         setError(response.error || response.message || 'Registration failed');
       }
-    } catch (err: any) {
-      setError(err.message || err.error || err.response?.data?.message || 'Registration failed');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

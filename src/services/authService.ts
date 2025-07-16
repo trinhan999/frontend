@@ -87,7 +87,7 @@ class AuthService {
                 return this.api(originalRequest);
               }
             }
-          } catch (refreshError) {
+          } catch {
             // Refresh token failed, redirect to login
             if (typeof window !== 'undefined') {
               localStorage.removeItem('token');
@@ -111,8 +111,9 @@ class AuthService {
         success: data.result === 'SUCCESS',
         error: data.result !== 'SUCCESS' ? (data.message || 'Login failed') : undefined,
       };
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      throw new Error(errorMessage);
     }
   }
 
@@ -120,8 +121,9 @@ class AuthService {
     try {
       const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/register', userData);
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Registration failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      throw new Error(errorMessage);
     }
   }
 
@@ -129,8 +131,9 @@ class AuthService {
     try {
       const response = await this.api.get<ApiResponse<AuthResponse['user']>>('/users/me');
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to get user data');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to get user data';
+      throw new Error(errorMessage);
     }
   }
 
@@ -138,8 +141,9 @@ class AuthService {
     try {
       const response = await this.api.post<ApiResponse<{ token: string; refreshToken: string }>>('/auth/refresh', { refreshToken });
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Token refresh failed');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Token refresh failed';
+      throw new Error(errorMessage);
     }
   }
 
@@ -147,8 +151,9 @@ class AuthService {
     try {
       const response = await this.api.put<ApiResponse<AuthResponse['user']>>(`/users/${id}`, userData);
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to update user');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update user';
+      throw new Error(errorMessage);
     }
   }
 
@@ -156,8 +161,9 @@ class AuthService {
     try {
       const response = await this.api.post<ApiResponse<{ message: string }>>(`/users/${id}/change-password`, { currentPassword, newPassword });
       return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to change password');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to change password';
+      throw new Error(errorMessage);
     }
   }
 }

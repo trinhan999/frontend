@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { productService, Product, ProductFilters } from "@/services/productService";
-import Link from 'next/link';
-import { LogOut, ShoppingCart, Filter } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useSearchParams } from 'next/navigation';
 import toast from "react-hot-toast";
 import ProductCard from "@/components/ProductCard";
 
-export default function ProductsPage() {
-  const { user, isAuthenticated, logout } = useAuth();
+function ProductsPageContent() {
+  const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || '';
@@ -50,7 +49,7 @@ export default function ProductsPage() {
     // eslint-disable-next-line
   }, [searchParams]);
 
-  const handleFilterChange = (key: keyof ProductFilters, value: any) => {
+  const handleFilterChange = (key: keyof ProductFilters, value: string | number | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value, page: 0 }));
   };
 
@@ -189,5 +188,13 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
+      <ProductsPageContent />
+    </Suspense>
   );
 } 

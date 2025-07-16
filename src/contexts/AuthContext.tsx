@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
@@ -43,6 +43,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const logout = useCallback(() => {
+    setUser(null);
+    Cookies.remove('user');
+    // Clear JWT token from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
+    router.push('/login');
+  }, [router]);
+
   useEffect(() => {
     // Check for existing user data on app load
     const storedUser = Cookies.get('user');
@@ -65,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             logout();
           }
         }
-      } catch (e) {
+      } catch {
         // If decoding fails, logout for safety
         logout();
       }
@@ -75,8 +85,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         setUser(JSON.parse(storedUser));
         scheduleAutoLogout(token);
-      } catch (error) {
-        console.error('Error parsing stored user data:', error);
+      } catch {
+        console.error('Error parsing stored user data');
         Cookies.remove('user');
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');
@@ -91,7 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       if (logoutTimer) clearTimeout(logoutTimer);
     };
-  }, []);
+  }, [logout]);
 
   const login = (userData: User) => {
     setUser(userData);
@@ -114,20 +124,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             logout();
           }
         }
-      } catch (e) {
+      } catch {
         logout();
       }
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    Cookies.remove('user');
-    // Clear JWT token from localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-    }
-    router.push('/login');
   };
 
   const updateUser = (userData: User) => {

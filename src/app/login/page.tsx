@@ -48,8 +48,9 @@ export default function LoginPage() {
       } else {
         setError(response.error || 'Login failed');
       }
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

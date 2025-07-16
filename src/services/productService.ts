@@ -37,7 +37,7 @@ export interface ProductPage {
 
 export const productService = {
   async getProducts(filters: ProductFilters = {}): Promise<ProductPage> {
-    const params: any = { ...filters };
+    const params: Record<string, string | number | undefined> = { ...filters };
     const response = await axios.get(`${API_BASE_URL}/api/products`, { params });
     return response.data.data;
   },

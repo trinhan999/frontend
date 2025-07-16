@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { adminService } from '@/services/adminService';
@@ -32,10 +31,8 @@ interface OrderItem {
 const ORDER_STATUSES = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 
 export default function AdminOrdersPage() {
-  const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -48,8 +45,9 @@ export default function AdminOrdersPage() {
     try {
       const data = await adminService.getAllOrders();
       setOrders(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch orders');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch orders';
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -66,8 +64,9 @@ export default function AdminOrdersPage() {
     try {
       const updatedOrder = await adminService.updateOrderStatus(orderId, newStatus);
       setOrders(orders.map(o => o.orderId === orderId ? updatedOrder : o));
-    } catch (err: any) {
-      alert('Failed to update order status: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update order status';
+      alert('Failed to update order status: ' + errorMessage);
     }
   };
 

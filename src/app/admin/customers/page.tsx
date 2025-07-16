@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { adminService } from '@/services/adminService';
@@ -18,10 +17,8 @@ interface User {
 }
 
 export default function AdminCustomersPage() {
-  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -34,8 +31,9 @@ export default function AdminCustomersPage() {
     try {
       const data = await adminService.getAllUsers();
       setUsers(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch users');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch users';
+      console.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -54,8 +52,9 @@ export default function AdminCustomersPage() {
     try {
       const updatedUser = await adminService.updateUserRole(userId, newRole);
       setUsers(users.map(u => u.id === userId ? updatedUser : u));
-    } catch (err: any) {
-      alert('Failed to update user role: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update user role';
+      alert('Failed to update user role: ' + errorMessage);
     }
   };
 
@@ -64,8 +63,9 @@ export default function AdminCustomersPage() {
       try {
         await adminService.deleteUser(userId);
         setUsers(users.filter(u => u.id !== userId));
-      } catch (err: any) {
-        alert('Failed to delete user: ' + err.message);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete user';
+        alert('Failed to delete user: ' + errorMessage);
       }
     }
   };
