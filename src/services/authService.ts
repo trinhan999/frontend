@@ -106,7 +106,29 @@ class AuthService {
       const response = await this.api.post('/auth/login', credentials);
       return response.data;
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      // Handle axios error responses
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 400) {
+          const errorData = error.response?.data;
+          if (errorData?.message) {
+            throw new Error(errorData.message);
+          } else {
+            throw new Error('Invalid username or password. Please check your credentials and try again.');
+          }
+        } else if (status === 401) {
+          throw new Error('Invalid username or password. Please check your credentials and try again.');
+        } else if (status === 404) {
+          throw new Error('User not found. Please check your username or email.');
+        } else if (status && status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        } else {
+          throw new Error('Login failed. Please try again.');
+        }
+      }
+      
+      // Handle other types of errors
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again.';
       throw new Error(errorMessage);
     }
   }
@@ -123,7 +145,28 @@ class AuthService {
       return response.data;
     } catch (error: unknown) {
       console.error('AuthService: Registration error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      
+      // Handle axios error responses
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 400) {
+          const errorData = error.response?.data;
+          if (errorData?.message) {
+            throw new Error(errorData.message);
+          } else {
+            throw new Error('Invalid registration data. Please check your information and try again.');
+          }
+        } else if (status === 409) {
+          throw new Error('Username or email already exists. Please choose different credentials.');
+        } else if (status && status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        } else {
+          throw new Error('Registration failed. Please try again.');
+        }
+      }
+      
+      // Handle other types of errors
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
       throw new Error(errorMessage);
     }
   }
