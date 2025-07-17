@@ -26,6 +26,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const { login } = useAuth();
   const router = useRouter();
 
@@ -40,8 +41,11 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     setError('');
+    setSuccess('');
 
     try {
+      console.log('Submitting registration data:', data);
+      
       const response = await authService.register({
         username: data.username,
         email: data.email,
@@ -50,18 +54,49 @@ export default function RegisterPage() {
         lastName: data.lastName,
       });
       
-      if (response.success && response.data) {
+      console.log('Registration response:', response);
+      
+      if (response.result === 'SUCCESS' && response.data) {
         // Store JWT token in localStorage
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
+          console.log('Token stored in localStorage');
         }
         
+        // Login the user
         login(response.data.user);
-        router.push('/');
+        console.log('User logged in:', response.data.user);
+        
+        // Show success message
+        setSuccess('Registration successful! Redirecting to home page...');
+        
+        // Add a small delay to ensure state updates are processed
+        setTimeout(() => {
+          console.log('Redirecting to home page...');
+          
+          // Try router.push first
+          try {
+            router.push('/');
+            console.log('Router.push called successfully');
+          } catch (routerError) {
+            console.error('Router.push failed:', routerError);
+          }
+          
+          // Fallback redirect using window.location after a short delay
+          setTimeout(() => {
+            console.log('Attempting fallback redirect...');
+            if (typeof window !== 'undefined') {
+              console.log('Using window.location.href for redirect');
+              window.location.href = '/';
+            }
+          }, 1000);
+        }, 100);
       } else {
-        setError(response.error || response.message || 'Registration failed');
+        console.error('Registration failed:', response.message);
+        setError(response.message || 'Registration failed');
       }
     } catch (err: unknown) {
+      console.error('Registration error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       setError(errorMessage);
     } finally {
@@ -91,6 +126,12 @@ export default function RegisterPage() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
               {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+              {success}
             </div>
           )}
           

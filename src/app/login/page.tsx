@@ -37,7 +37,7 @@ export default function LoginPage() {
     try {
       const response = await authService.login(data);
       
-      if (response.success && response.data) {
+      if (response.result === 'SUCCESS' && response.data) {
         // Store JWT token in localStorage
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
@@ -46,7 +46,7 @@ export default function LoginPage() {
         login(response.data.user);
         router.push('/');
       } else {
-        setError(response.error || 'Login failed');
+        setError(response.message || 'Login failed');
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
@@ -89,7 +89,7 @@ export default function LoginPage() {
               <input
                 {...register('usernameOrEmail')}
                 type="text"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 placeholder="Enter your username or email"
               />
               {errors.usernameOrEmail && (
@@ -104,7 +104,7 @@ export default function LoginPage() {
               <input
                 {...register('password')}
                 type="password"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 placeholder="Enter your password"
               />
               {errors.password && (

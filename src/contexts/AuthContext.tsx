@@ -104,11 +104,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [logout]);
 
   const login = (userData: User) => {
+    console.log('AuthContext login called with user:', userData);
     setUser(userData);
     Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+    console.log('User data stored in cookies');
+    
     // Schedule auto logout on login
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (token) {
+      console.log('Token found, scheduling auto logout');
       // Decode and schedule auto logout
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
@@ -125,8 +129,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         }
       } catch {
+        console.error('Error decoding token, logging out');
         logout();
       }
+    } else {
+      console.log('No token found in localStorage');
     }
   };
 

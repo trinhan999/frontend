@@ -30,9 +30,9 @@ export interface AuthResponse {
 }
 
 export interface ApiResponse<T> {
-  success: boolean;
+  result: string;  // 'SUCCESS' or 'ERROR'
+  message: string;
   data?: T;
-  message?: string;
   error?: string;
 }
 
@@ -104,12 +104,7 @@ class AuthService {
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
     try {
       const response = await this.api.post('/auth/login', credentials);
-      const data = response.data;
-      return {
-        ...data,
-        success: data.result === 'SUCCESS',
-        error: data.result !== 'SUCCESS' ? (data.message || 'Login failed') : undefined,
-      };
+      return response.data;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
       throw new Error(errorMessage);
@@ -118,9 +113,16 @@ class AuthService {
 
   async register(userData: RegisterRequest): Promise<ApiResponse<AuthResponse>> {
     try {
+      console.log('AuthService: Sending registration request to:', '/auth/register');
+      console.log('AuthService: Registration data:', userData);
+      
       const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/register', userData);
+      console.log('AuthService: Raw response:', response);
+      console.log('AuthService: Response data:', response.data);
+      
       return response.data;
     } catch (error: unknown) {
+      console.error('AuthService: Registration error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       throw new Error(errorMessage);
     }

@@ -15,12 +15,12 @@ const sidebarItems: SidebarItem[] = [
   { name: 'Products', href: '/admin/products', icon: '🛍️' },
   { name: 'Orders', href: '/admin/orders', icon: '📦' },
   { name: 'Customers', href: '/admin/customers', icon: '👥' },
-  { name: 'Payments', href: '/admin/payments', icon: '💳' },
-  { name: 'Shipping', href: '/admin/shipping', icon: '🚚' },
-  { name: 'Promotions', href: '/admin/promotions', icon: '🎯' },
+  // { name: 'Payments', href: '/admin/payments', icon: '💳' },
+  // { name: 'Shipping', href: '/admin/shipping', icon: '🚚' },
+  // { name: 'Promotions', href: '/admin/promotions', icon: '🎯' },
   { name: 'Reports', href: '/admin/reports', icon: '📈' },
-  { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
-  { name: 'Admin Users', href: '/admin/users', icon: '🔐' },
+  // { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
+  // { name: 'Admin Users', href: '/admin/users', icon: '🔐' },
 ];
 
 interface AdminSidebarProps {
@@ -63,8 +63,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                   href={item.href}
                   className={`
                     flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200
-                    ${isActive 
-                      ? 'bg-blue-600 text-white' 
+                    ${isActive
+                      ? 'bg-blue-600 text-white'
                       : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     }
                   `}
@@ -80,18 +80,17 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               );
             })}
           </div>
-        </nav>
-
-        {/* Bottom section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700">
-          <Link
-            href="/dashboard"
-            className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors duration-200"
-          >
-            <span className="mr-3">←</span>
-            Back to Store
-          </Link>
-        </div>
+          {/* Bottom section */}
+          <div className="  p-4 border-t border-gray-700">
+            <Link
+              href="/dashboard"
+              className="flex items-center px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors duration-200"
+            >
+              <span className="mr-3">←</span>
+              Back to Store
+            </Link>
+          </div>
+        </nav>        
       </div>
     </>
   );

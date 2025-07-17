@@ -109,7 +109,7 @@ export default function AdminReportsPage() {
                 View detailed reports and analytics for your store
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4  text-gray-900">
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
