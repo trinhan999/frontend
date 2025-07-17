@@ -17,10 +17,14 @@ import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import ProductCard from "@/components/ProductCard";
+import { useEffect, useState } from 'react';
+import { productService, Product } from '@/services/productService';
 
 export default function HomePage() {
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const categories = [
     { name: 'Processors', icon: Cpu, href: '/category/processors', color: 'bg-blue-500' },
@@ -31,40 +35,21 @@ export default function HomePage() {
     { name: 'Accessories', icon: Keyboard, href: '/category/accessories', color: 'bg-indigo-500' },
   ];
 
-  const featuredProducts = [
-    {
-      id: 1,
-      name: 'Intel Core i9-13900K',
-      price: 569.99,
-      rating: 4.8,
-      image: '/images/cpu.jpg',
-      category: 'Processors'
-    },
-    {
-      id: 2,
-      name: 'NVIDIA RTX 4080',
-      price: 1199.99,
-      rating: 4.9,
-      image: '/images/gpu.jpg',
-      category: 'Graphics Cards'
-    },
-    {
-      id: 3,
-      name: 'Samsung 970 EVO Plus 1TB',
-      price: 89.99,
-      rating: 4.7,
-      image: '/images/ssd.jpg',
-      category: 'Storage'
-    },
-    {
-      id: 4,
-      name: 'Corsair Vengeance 32GB',
-      price: 129.99,
-      rating: 4.6,
-      image: '/images/ram.jpg',
-      category: 'Memory'
-    },
-  ];
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const products = await productService.getFeaturedProducts(4);
+        setFeaturedProducts(products);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        toast.error('Failed to load featured products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
 
   const router = useRouter();
 
@@ -155,23 +140,48 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  brand: '', // No brand in featuredProducts data
-                  category: product.category,
-                  price: product.price,
-                  imageUrl: product.image || '/images/placeholder.png',
-                  averageRating: product.rating,
-                  reviewCount: 0, // No reviewCount in featuredProducts data
-                  description: '', // No description in featuredProducts data
-                }}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow p-4 animate-pulse">
+                  <div className="h-40 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 bg-gray-200 rounded"></div>
+                </div>
+              ))
+            ) : featuredProducts.length === 0 ? (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500 text-lg">No featured products available at the moment.</p>
+                <Link 
+                  href="/products"
+                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold mt-4"
+                >
+                  Browse All Products
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    brand: product.brand,
+                    category: product.category,
+                    price: product.price,
+                    imageUrl: product.imageUrl || '/images/placeholder.png',
+                    averageRating: product.averageRating,
+                    reviewCount: product.reviewCount,
+                    description: product.description,
+                  }}
+                  onAddToCart={handleAddToCart}
+                />
+              ))
+            )}
           </div>
           
           <div className="text-center mt-8">

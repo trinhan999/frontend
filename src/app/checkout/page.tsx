@@ -69,7 +69,7 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error("Order failed");
       await clearCart();
       toast.success("Order placed successfully!");
-      router.push("/dashboard");
+      router.push("/orders");
     } catch {
       toast.error("Failed to place order. Please try again.");
     } finally {

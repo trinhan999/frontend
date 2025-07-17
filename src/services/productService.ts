@@ -41,6 +41,47 @@ export const productService = {
     return response.data.data;
   },
 
+  async getFeaturedProducts(limit: number = 4): Promise<Product[]> {
+    // Get products with high ratings (4.5+) and limit the results
+    // We'll get more products and then select a diverse mix
+    const response = await axios.get(`${API_CONFIG.BASE_URL}/products`, {
+      params: {
+        minRating: 4.5,
+        size: Math.min(limit * 2, 20), // Get more products to select from
+        page: 0
+      }
+    });
+    
+    const products = response.data.data.content;
+    
+    // If we have enough products, try to get a diverse selection
+    if (products.length >= limit) {
+      const categories = new Set();
+      const selectedProducts: Product[] = [];
+      
+      // First, try to get one product from each category
+      for (const product of products) {
+        if (selectedProducts.length >= limit) break;
+        if (!categories.has(product.category)) {
+          categories.add(product.category);
+          selectedProducts.push(product);
+        }
+      }
+      
+      // If we still have slots, fill with remaining high-rated products
+      for (const product of products) {
+        if (selectedProducts.length >= limit) break;
+        if (!selectedProducts.find(p => p.id === product.id)) {
+          selectedProducts.push(product);
+        }
+      }
+      
+      return selectedProducts.slice(0, limit);
+    }
+    
+    return products.slice(0, limit);
+  },
+
   async getProductById(id: number): Promise<Product> {
     const response = await axios.get(`${API_CONFIG.BASE_URL}/products/${id}`);
     return response.data.data;

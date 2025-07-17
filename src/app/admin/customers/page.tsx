@@ -294,7 +294,7 @@ export default function AdminCustomersPage() {
                           <select
                             value={user.role}
                             onChange={(e) => handleUpdateRole(user.id, e.target.value)}
-                            className="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mr-4"
+                            className="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 mr-4 text-gray-900"
                           >
                             <option value="CUSTOMER">Customer</option>
                             <option value="ADMIN">Admin</option>
