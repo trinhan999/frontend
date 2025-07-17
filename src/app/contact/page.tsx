@@ -78,7 +78,7 @@ export default function ContactPage() {
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Message Sent!</h1>
           <p className="text-gray-600 mb-6">
-            Thank you for contacting us. We'll get back to you within 24 hours.
+            Thank you for contacting us. We&apos;ll get back to you within 24 hours.
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
@@ -102,7 +102,7 @@ export default function ContactPage() {
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Have questions about our products or need technical support? 
-              We're here to help you build the perfect PC.
+              We&apos;re here to help you build the perfect PC.
             </p>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function ContactPage() {
                   <p className="text-gray-600 text-sm">Yes! Our team of PC building experts is available to help with component compatibility and build advice.</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900">What's your return policy?</h4>
+                  <h4 className="font-medium text-gray-900">What&apos;s your return policy?</h4>
                   <p className="text-gray-600 text-sm">We offer a 30-day return policy for most items. Some restrictions apply to opened software and certain components.</p>
                 </div>
               </div>

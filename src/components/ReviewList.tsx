@@ -45,8 +45,8 @@ export default function ReviewList({ reviews, onReviewUpdated }: ReviewListProps
       toast.success('Review updated successfully!');
       setEditingReview(null);
       onReviewUpdated();
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Failed to update review';
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to update review';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -61,8 +61,8 @@ export default function ReviewList({ reviews, onReviewUpdated }: ReviewListProps
       await reviewService.deleteReview(reviewId);
       toast.success('Review deleted successfully!');
       onReviewUpdated();
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Failed to delete review';
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to delete review';
       toast.error(message);
     } finally {
       setLoading(false);

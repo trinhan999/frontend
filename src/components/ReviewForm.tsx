@@ -33,8 +33,8 @@ export default function ReviewForm({ productId, onReviewSubmitted, onCancel }: R
       await reviewService.createReview(request);
       toast.success('Review submitted successfully!');
       onReviewSubmitted();
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Failed to submit review';
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to submit review';
       toast.error(message);
     } finally {
       setLoading(false);
