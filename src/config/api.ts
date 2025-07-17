@@ -6,11 +6,11 @@ export const API_CONFIG = {
   // BASE_URL: 'http://localhost:8080/api',
   
   // Production - Deployed Backend (Update this with your actual deployed URL)
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
+  // BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
   
   // Alternative: You can uncomment and use one of these based on your deployment:
   // BASE_URL: 'https://your-app.herokuapp.com/api',
-  // BASE_URL: 'https://backend-production-1672.up.railway.app/api',
+  BASE_URL: 'https://backend-production-1672.up.railway.app/api',
   // BASE_URL: 'https://your-app.render.com/api',
   // BASE_URL: 'https://your-app.vercel.app/api',
   
